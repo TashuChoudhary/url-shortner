@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 )
@@ -45,7 +46,12 @@ func shortHandler(w http.ResponseWriter, r *http.Request) {
 	urlStore.mapping[code] = req.URL
 	urlStore.Unlock()
 
-	resp := Response{ShortURL: "http://localhost:8080/" + code}
+	baseURL := os.Getenv("Base_URL")
+	if baseURL == "" {
+		baseURL = "http://localhost:8080"
+	}
+
+	resp := Response{ShortURL: baseURL + "/" + code}
 	w.Header().Set("Content-type", "application/json")
 	json.NewEncoder(w).Encode(resp)
 
