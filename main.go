@@ -46,11 +46,10 @@ func shortHandler(w http.ResponseWriter, r *http.Request) {
 	urlStore.mapping[code] = req.URL
 	urlStore.Unlock()
 
-	baseURL := os.Getenv("Base_URL")
+	baseURL := os.Getenv("BASE_URL")
 	if baseURL == "" {
 		baseURL = "http://localhost:8080"
 	}
-
 	resp := Response{ShortURL: baseURL + "/" + code}
 	w.Header().Set("Content-type", "application/json")
 	json.NewEncoder(w).Encode(resp)
