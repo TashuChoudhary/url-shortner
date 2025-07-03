@@ -18,7 +18,7 @@ A simple and lightweight URL shortener service built using Go. This backend-only
 
 ## 🌐 Live Demo
 
-[Visit the deployed app](https://url-shortner-3ivd.onrender.com)
+[Visit the deployed app](https://url-shortner-3ivd.onrender.com/)
 
 ## 🛠️ Tech Stack
 
@@ -96,9 +96,10 @@ Learning AWS, Docker, Terraform, and Go
 
 - "I believe in building, breaking, and learning fast."
 
-##  License
 
-This project is open source under the MIT License.
+
+
+
 
 
 
