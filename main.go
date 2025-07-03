@@ -7,13 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"sync"
 )
-
-var urlStore = struct {
-	sync.RWMutex
-	mapping map[string]string
-}{mapping: make(map[string]string)}
 
 //func init() {
 //	rand.Seed(time.Now().UnixNano())
@@ -42,9 +36,13 @@ func shortHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	code := generateShortCode()
-	urlStore.Lock()
-	urlStore.mapping[code] = req.URL
-	urlStore.Unlock()
+	//urlStore.Lock()
+	//urlStore.mapping[code] = req.URL
+	//urlStore.Unlock()
+	if err := saveURL(code, req.URL); err != nil {
+		http.Error(w, "Failed to save URL", http.StatusInternalServerError)
+		return
+	}
 
 	baseURL := os.Getenv("BASE_URL")
 	if baseURL == "" {
@@ -58,9 +56,10 @@ func shortHandler(w http.ResponseWriter, r *http.Request) {
 func redirectHandler(w http.ResponseWriter, r *http.Request) {
 	code := strings.TrimPrefix(r.URL.Path, "/")
 
-	urlStore.RLock()
-	originalURL, found := urlStore.mapping[code]
-	urlStore.RUnlock()
+	//urlStore.RLock()
+	//originalURL, found := urlStore.mapping[code]
+	//urlStore.RUnlock()
+	originalURL, found := getOriginalURL(code)
 
 	if found {
 		http.Redirect(w, r, originalURL, http.StatusFound)
@@ -70,6 +69,7 @@ func redirectHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 func main() {
+	initDB()
 	http.HandleFunc("/shorten", shortHandler)
 	http.HandleFunc("/", redirectHandler)
 
