@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -68,10 +69,20 @@ func redirectHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func rootHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/" {
+		fmt.Fprintln(w, "Welcome to URL Shortner Service 🎉 POST /shorten with JSON ")
+		return
+
+	}
+	redirectHandler(w, r)
+}
+
 func main() {
 	initDB()
 	http.HandleFunc("/shorten", shortHandler)
-	http.HandleFunc("/", redirectHandler)
+	http.HandleFunc("/", rootHandler)
 
 	log.Println("Server started at :8080")
 
